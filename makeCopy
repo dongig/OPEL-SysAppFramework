@@ -1,0 +1,33 @@
+.SUFFIXES : .cpp .o
+OBJECTS = mainSysAppManager.o appPackageManager.o appStatusManager.o deviceManager.o memoryManager.o appPackageRepo.o serviceDaemonManager.o DbusManager.o deviceRepo.o serviceDaemonRepo.o _repoClass.o 
+
+SRCS = $(OBJS:.o=.cpp)
+
+INC = -L/usr/include  
+INC2 = `pkg-config --lib --cflags dbus-1 glib-2.0 dbus-glib-1`
+LIBS = -lsqlite3 -lpthread
+CC = g++ 
+
+CFLAGS = -g -c
+ 
+TARGET = sysAppManager 
+
+ 
+$(TARGET) : $(OBJECTS)
+	$(CC) $(INC) $(INC2) -o $(TARGET) $(OBJECTS) $(LIBS) $(INC2)
+ 
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+ 
+mainSysAppManager.o : appPackageManager.h appStatusManager.h deviceManager.h memoryManager.h serviceDaemonManager.h DbusManager.h mainSysAppManager.cpp
+
+appPackageManager.o : appPackageManager.h appPackageManager.cpp
+appPackageRepo.o : _repoClass.h appPackageRepo.cpp
+appStatusManager.o : appStatusManager.h appStatusManager.cpp
+deviceManager.o : deviceManager.h deviceRepo.h _repoClass.h deviceManager.cpp
+deviceRepo.o : _repoClass.h deviceRepo.cpp
+memoryManager.o : memoryManager.h memoryManager.cpp
+serviceDaemonManager.o : serviceDaemonManager.h serviceDaemonRepo.h _repoClass.h serviceDaemonManager.cpp
+serviceDaemonRepo.o : _repoClass.h serviceDaemonRepo.cpp
+_repoClass.o : _repoClass.cpp
+DbusManager.o : DbusManager.cpp
